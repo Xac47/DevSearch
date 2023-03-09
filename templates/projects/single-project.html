@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<script>
+(function(window, location) {
+var bbURL = 'http://127.0.0.1:8000/projects/';
+history.pushState(null, document.title, location);
+window.addEventListener("popstate", function() {
+history.replaceState(null, document.title, location);
+setTimeout(function() {
+location.replace(bbURL);
+}, 0);
+}, false);
+}(window, location));
+</script>
+  <!-- Main Section -->
+  <main class="singleProject my-md">
+    <div class="container">
+      <div class="layout">
+        <div class="column column--1of3">
+          <h3 class="singleProject__subtitle">Инструменты & Стеки</h3>
+          <div class="singleProject__toolStack">
+            {% for tag in object.tags.all %}
+            <span class="tag tag--pill tag--sub tag--lg">
+              <small>{{ tag }}</small>
+            </span>
+            {% endfor %}
+          </div>
+          {% if object.source_link %}
+          <a class="singleProject__liveLink" href="{{ object.source_link }}" target="_blank"><i class="im im-external-link"></i>Ссылка на источник
+          </a>
+          {% endif %}
+          <br>
+          {% if object.demo_link %}
+          <a class="singleProject__liveLink" href="{{ object.demo_link }}" target="_blank"><i class="im im-external-link"></i>Демонстрационная ссылка
+          </a>
+          {% endif %}
+        </div>
+        <div class="column column--2of3">
+          <img class="singleProject__preview" src="{% if object.image %}{{ object.image.url }}{% else %}{% static 'images/default_photo/default.jpg' %}{% endif %}" alt="{{ object.title }}" />
+          <a href="{% url 'profile' object.auther.id %}" class="singleProject__developer">{{ object.auther.name }}</a>
+          <h2 class="singleProject__title">{{ object.title }}</h2>
+          <h3 class="singleProject__subtitle">О ПРОЕКТЕ</h3>
+          <div class="singleProject__info">
+            {{ object.desc }}
+          </div>
+          <br>
+          <h3 class="singleProject__subtitle">Опубликовано:</h3> {{ object.created }}
+          <div class="comments">
+            <h3 class="singleProject__subtitle">Обратная связь</h3>
+
+            <a href="{% url 'check-likes' object.pk %}">
+            {% if user.profile in object.likes.all %}
+              <i class="fa-solid fa-thumbs-up"></i>
+            {% else %}
+              <i class="fa-regular fa-thumbs-up"></i>
+            {% endif %}
+            </a>
+            : {{ object.likes.count }} |
+            <a href="{% url 'check-dislikes' object.pk %}">
+            {% if user.profile in object.dis_likes.all %}
+              <i class="fa-solid fa-thumbs-down"></i>
+            {% else %}
+              <i class="fa-regular fa-thumbs-down"></i>
+            {% endif %}
+            </a>
+            : {{ object.dis_likes.count }}
+
+            <h5 class="project--rating">
+              <span style="font-weight: bold;">{{ object.vote_ratio }}%</span>
+              Положительные отзывы ({{ object.vote_total }} Голос{{ object.vote_total|pluralize:'ов' }} )
+            </h5>
+
+            {% if object.on_off_review %}
+
+              {% if user.is_authenticated %}
+              <form class="form" action="" method="POST" id="formReview">
+                {% csrf_token %}
+                <input type="hidden" name="parent" id="contactparent" value="">
+                <div class="form__field">
+                  {{ form }}
+                </div>
+                <input class="btn btn--sub btn--lg" type="submit" value="Отправить" />
+              </form>
+              {% endif %}
+
+
+              {% for comment in object.get_review %}
+                <div class="commentList">
+
+                  <div class="comment">
+                    <a href="{% url 'profile' comment.auther.id %}">
+                      <img class="avatar avatar--md"
+                        src="{% if comment.auther.profile_image %}{{ comment.auther.profile_image.url }}{% else %}{% static 'images/default_photo/user-default.png' %}{% endif %}" alt="{{ comment.auther.name }}" />
+                    </a>
+                    <div class="comment__details">
+                      <a href="{% url 'profile' comment.auther.id %}" class="comment__author">{{ comment.auther.name }}</a>
+                      <p class="comment__info">
+                        {{ comment.body }}
+                        <br>
+                        {{ comment.created }}
+                      </p>
+                      {% if user.is_authenticated %}
+                      <a class="tag tag--pill tag--main settings__btn" href="#formReview" onclick="addReview('{{ comment.auther.name }}', '{{ comment.id }}')"><b>Ответить</b></a>
+                      {% endif %}
+                      {% if user.profile == comment.auther or user.profile == object.auther %}
+                      <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-review' comment.id %}"><i class="fa-solid fa-trash-can"></i> Удалить</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                {% for answer in comment.get_answers %}
+                  <div class="commentList" style="margin-left: 70px;">
+
+                    <div class="comment">
+                      <a href="{% url 'profile' answer.auther.id %}">
+                        <img class="avatar avatar--md"
+                          src="{% if answer.auther.profile_image %}{{ answer.auther.profile_image.url }}{% else %}{% static 'images/default_photo/user-default.png' %}{% endif %}" alt="{{ comment.auther.name }}" />
+                      </a>
+                      <div class="comment__details">
+                        <a href="{% url 'profile' answer.auther.id %}" class="comment__author">{{ answer.auther.name }}</a>
+                        <p class="comment__info">
+                          {{ answer.body }}
+                          <br>
+                          {{ answer.created }}
+                        </p>
+                        {% if user.profile == answer.auther or user.profile == object.auther %}
+                        <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-review' answer.id %}"><i class="fa-solid fa-trash-can"></i> Удалить</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+
+              {% endfor %}
+
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <script>
+    function addReview(name, id) {
+      document.getElementById("contactparent").value = id;
+      document.getElementById("contactcomment").innerText = `${name}, `
+    }
+  </script>
+{% endblock %}

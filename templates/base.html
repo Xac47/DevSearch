@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://kit.fontawesome.com/232ce32217.js" crossorigin="anonymous"></script>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+  <!-- Icon - IconMonster -->
+  <link rel="stylesheet" href="https://cdn.iconmonstr.com/1.3.0/css/iconmonstr-iconic-font.min.css" />
+  <!-- Mumble UI -->
+  <link rel="stylesheet" href="{% static 'uikit/styles/uikit.css' %}" />
+  <!-- Dev Search UI -->
+  <link rel="stylesheet" href="{% static 'styles/app.css' %}" />
+
+  <title>Поиск Разработчиков - Связаться с разработчиками!</title>
+</head>
+<body>
+{% include 'include/navbar.html' %}
+
+{% block content %} {% endblock %}
+
+<p>FOOTER</p>
+
+<script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>

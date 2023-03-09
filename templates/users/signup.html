@@ -1,0 +1,64 @@
+{% extends 'users/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="auth">
+  <div class="card">
+    <div class="auth__header text-center">
+      <a href="/">
+        <img src="{% static 'images/icon.svg' %}" alt="icon" />
+      </a>
+      <h3>Зарегистрировать аккаунт</h3>
+      <p>Создайте новую учетную запись разработчика</p>
+    </div>
+
+    <form action="{% url 'signup' %}" class="form auth__form" method="post">
+      {% csrf_token %}
+
+      <!-- Input:Text -->
+      <div class="form__field">
+        <label for="{{ form.first_name.id_for_label }}">Имя/Фамилия: </label>
+        {{ form.first_name }}
+        {{ form.first_name.errors }}
+      </div>
+
+      <!-- Input:Text -->
+      <div class="form__field">
+        <label for="{{ form.username.id_for_label }}">Логин: </label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <!-- Input:Email -->
+      <div class="form__field">
+        <label for="{{ form.email.id_for_label }}">Email: </label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+
+      <!-- Input:Password -->
+      <div class="form__field">
+        <label for="{{ form.password1.id_for_label }}">Придумайте пароль: </label>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+      </div>
+
+      <!-- Input:Password -->
+      <div class="form__field">
+        <label for="{{ form.password2.id_for_label }}">Подтвердите пароль: </label>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+      </div>
+
+      <div class="auth__actions">
+        <input class="btn btn--sub btn--lg" type="submit" value="Зарегистрироваться" />
+      </div>
+    </form>
+    <div class="auth__alternative">
+      <p><b>Вы уже зарегистрированы?</b></p>
+      <a href="{% url 'login' %}">Войти</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'account' %}"><i class="fa-solid fa-arrow-left"></i></a>
+            <br>
+            <h2>Изменить профиль</h2>
+            <form class="form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form__field">
+                    {{ form }}
+                </div>
+
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Обновить" />
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

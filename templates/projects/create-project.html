@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+<!-- Main Section -->
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="#" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></a>
+            <br>
+            {% if a %}
+            <h2>Добавить проект</h2>
+            {% else %}
+            <h2>Изменить проект</h2>
+            {% endif %}
+            <form class="form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form__field">
+                    <label for="{{ form.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Отправить" />
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

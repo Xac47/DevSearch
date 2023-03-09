@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<script>
+(function(window, location) {
+var bbURL = 'http://127.0.0.1:8000/projects/';
+history.pushState(null, document.title, location);
+window.addEventListener("popstate", function() {
+history.replaceState(null, document.title, location);
+setTimeout(function() {
+location.replace(bbURL);
+}, 0);
+}, false);
+}(window, location));
+</script>
+  <!-- Main Section -->
+  <main class="settingsPage profile my-md">
+    <div class="container">
+      <div class="layout">
+        <div class="column column--1of3">
+          <div class="card text-center">
+            <div class="card__body dev">
+              <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-account' %}"><i class="fa-regular fa-pen-to-square"></i> Изменить</a>
+              <img class="avatar avatar--xl dev__avatar" src="{% if profile.profile_image %}{{ profile.profile_image.url }}{% else %}{% static 'images/default_photo/user-default.png' %}{% endif %}" />
+              <h2 class="dev__name">{{ user.profile.name }}</h2>
+              <p class="dev__title">
+                {% if profile.status_dev %}
+                {{ profile.status_dev }}
+                {% else %}
+                <b>Статус не указан</b>
+                {% endif %}
+              </p>
+              <p class="dev__location">
+                {% if profile.location %}
+                {{ profile.location }}
+                {% else %}
+                <b>Место жительство не указанно</b>
+                {% endif %}
+              </p>
+              <ul class="dev__social">
+                {% if profile.social_github %}
+                <li>
+                  <a title="Github" href="{{ profile.social_github }}" target="_blank"><i class="fa-brands fa-github"></i></a>
+                </li>
+                {% endif %}
+                {% if profile.social_vk %}
+                <li>
+                  <a title="Vk" href="{{ profile.social_vk }}" target="_blank"><i class="fa-brands fa-vk"></i></a>
+                </li>
+                {% endif %}
+                {% if profile.social_twitter %}
+                <li>
+                  <a title="Twitter" href="{{ profile.social_twitter }}" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                </li>
+                {% endif %}
+                {% if profile.social_telegram %}
+                <li>
+                  <a title="Telegram" href="{{ profile.social_telegram }}" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+                </li>
+                {% endif %}
+                {% if profile.social_website %}
+                <li>
+                  <a title="Personal Website" href="{{ profile.social_website }}" target="_blank"><i class="fa-solid fa-globe"></i></a>
+                </li>
+                {% endif %}
+                {% if profile.social_youtube %}
+                <li>
+                  <a title="YouTube" href="{{ profile.social_youtube }}" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                </li>
+                {% endif %}
+              </ul>
+              <p>Подписчики: {{ profile.subscribers.all.count }} | Подписки: {{ profile.subscriptions.all.count }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="column column--2of3">
+          <div class="devInfo">
+            <h3 class="devInfo__title">Обо мне</h3>
+            <p class="devInfo__about">
+              {% if profile.bio %}
+              {{ profile.bio }}
+              {% else %}
+              <b>Биография нет</b>
+              {% endif %}
+            </p>
+          </div>
+          <div class="settings">
+            <h3 class="settings__title">Навыки</h3>
+            <a class="tag tag--pill tag--sub settings__btn tag--lg" href="{% url 'create-skill' %}"><i class="fa-solid fa-plus"></i> Добавить навык</a>
+          </div>
+
+          <table class="settings__table">
+            {% for skill in profile.skill_set.all %}
+            <tr>
+              <td class="settings__tableInfo">
+                <h4>{{ skill }}</h4>
+                <p>
+                  {{ skill.desc }}
+                </p>
+              </td>
+              <td class="settings__tableActions">
+                <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-skill' skill.id %}"><i class="fa-regular fa-pen-to-square"></i> Изменить</a>
+                <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-skill' skill.id %}"><i class="fa-solid fa-trash-can"></i> Удалить</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+
+          <div class="settings">
+            <h3 class="settings__title">Проекты</h3>
+            <a class="tag tag--pill tag--sub settings__btn tag--lg" href="{% url 'create-project' %}"><i class="fa-solid fa-plus"></i> Добавить проект</a>
+          </div>
+
+          <table class="settings__table">
+            {% for project in profile.project_set.all %}
+            <tr>
+              <td class="settings__thumbnail">
+                <a href="{% url 'project' project.id %}"><img src="{% if project.image %}{{ project.image.url }}{% else %}{% static 'images/default_photo/default.jpg' %}{% endif %}" alt="Project Thumbnail" /></a>
+              </td>
+              <td class="settings__tableInfo">
+                <a href="{% url 'project' project.id %}">{{ project.title }}</a>
+                <p>
+                    {{ project.desc|slice:"200" }}
+                </p>
+              </td>
+              <td class="settings__tableActions">
+                <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-project' project.id %}"><i class="fa-regular fa-pen-to-square"></i> Изменить</a>
+                <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-project' project.id %}"><i class="fa-solid fa-trash-can"></i>
+                  Удалить</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

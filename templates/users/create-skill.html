@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="#" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></a>
+            <br>
+            {% if a %}
+            <h2>Добавить навык</h2>
+            {% else %}
+            <h2>Изменить навык</h2>
+            {% endif %}
+            <form class="form" method="POST">
+                {% csrf_token %}
+
+                <div class="form__field">
+                    {{ form }}
+                </div>
+
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Отправить" />
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

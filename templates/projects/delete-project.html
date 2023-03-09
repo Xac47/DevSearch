@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+  <main class="formPage my-xl">
+      <div class="content-box">
+          <div class="formWrapper">
+              <a class="backButton" href="#" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></a>
+              <br>
+                <h2>Удалить проект</h2>
+              <form class="form" method="POST">
+                  {% csrf_token %}
+                  <p>Вы точно хотите удалить проект "{{ object }}" ?</p>
+                  <a class="btn btn--sub btn--lg  my-md" href="#" onclick="goBack()">&#x2190 Назад</a>
+                  <input class="btn btn--sub btn--lg  my-md" type="submit" value="Удалить" />
+              </form>
+          </div>
+      </div>
+  </main>
+{% endblock %}
+

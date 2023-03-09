@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="home">
+    {% include 'include/search.html' %}
+    <!-- Search Result: DevList -->
+    <section class="projectsList">
+      <div class="container">
+        <div class="grid grid--three">
+          {% if projects %}
+          {% for project in projects %}
+          <div class="column">
+            <div class="card project">
+              <a href="{% url 'project' project.id %}" class="project">
+                <img class="project__thumbnail" src="{% if project.image %}{{ project.image.url }}{% else %}{% static 'images/default_photo/default.jpg' %}{% endif %}" alt="{{ project.title }}" width="390 px"/>
+                <div class="card__body">
+                  <h3 class="project__title">{{ project.title }}</h3>
+                  <p><a class="project__author" href="{% url 'profile' project.auther.id %}">Автор: {{ project.auther.name }}</a></p>
+                  <p class="project--rating">
+                    <span style="font-weight: bold;">{{ project.vote_ratio }}%</span> Положительные отзывы
+                    ({{ project.vote_total }} Голос{{ project.vote_total|pluralize:'ов' }} )
+                  </p>
+                  <div class="project__tags">
+                    {% for tag in project.tags.all %}
+                    <span class="tag tag--pill tag--main">
+                      <small>{{ tag }}</small>
+                    </span>
+                    {% endfor %}
+                  </div>
+                  <br>
+                  <i class="fa-solid fa-eye"></i>{{ project.views.count }}
+                  <i class="fa-regular fa-comment"></i>{{ project.review_set.count }}
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <h3 style="margin: 0 auto;">По запросу <b>"{{ search }}"</b> Ничего не найдено</h3>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    {% include 'include/pagination.html' with queryset=projects custom_range=custom_range %}
+
+  </main>
+
+{% endblock %}
