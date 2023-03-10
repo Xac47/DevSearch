@@ -35,15 +35,10 @@ class Project(models.Model):
 
 
 class Review(models.Model):
-    VOTE_TYPE = (
-        ('за', 'Голосовать за'),
-        ('против', 'Проголосовать против'),
-    )
 
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='Проект')
     body = models.TextField('Описание', null=True, blank=True)
-    value = models.CharField('Значение', max_length=200, choices=VOTE_TYPE)
     created = models.DateTimeField('Дата', auto_now_add=True)
     auther = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True, related_name='my_review')
     parent = models.ForeignKey('Review', on_delete=models.CASCADE, null=True, blank=True)
