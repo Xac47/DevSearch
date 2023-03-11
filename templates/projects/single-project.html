@@ -105,6 +105,7 @@ location.replace(bbURL);
                       <a class="tag tag--pill tag--main settings__btn" href="#formReview" onclick="addReview('{{ comment.auther.name }}', '{{ comment.id }}')"><b>Ответить</b></a>
                       {% endif %}
                       {% if user.profile == comment.auther or user.profile == object.auther %}
+                      <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-comment' object.id comment.id %}"><i class="fa-regular fa-pen-to-square"></i> Изменить</a>
                       <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-review' comment.id %}"><i class="fa-solid fa-trash-can"></i> Удалить</a>
                       {% endif %}
                     </div>
@@ -127,6 +128,7 @@ location.replace(bbURL);
                           {{ answer.created }}
                         </p>
                         {% if user.profile == answer.auther or user.profile == object.auther %}
+                        <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-comment' object.id comment.id %}"><i class="fa-regular fa-pen-to-square"></i> Изменить</a>
                         <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-review' answer.id %}"><i class="fa-solid fa-trash-can"></i> Удалить</a>
                         {% endif %}
                       </div>

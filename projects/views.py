@@ -25,28 +25,48 @@ def projects(request):
     return render(request, 'projects/projects.html', context)
 
 
-def project(request, pk):
-    object = Project.objects.get(id=pk)
-    form = CreateReviewForm()
-
-    """ Просмотры """
-    if request.user.is_authenticated:
+def project(request, pk, id=None):
+    try:
+        object = Project.objects.get(id=pk)
         profile = request.user.profile
-        user = object.views.filter(id=profile.id)
-        if not user.exists():
-            object.views.add(profile)
+        form = CreateReviewForm()
 
-    """ Комментарии """
-    if request.method == 'POST' and object.on_off_review:
-        form = CreateReviewForm(request.POST)
-        if form.is_valid():
-            form = form.save(commit=False)
-            if request.POST.get('parent'):
-                form.parent_id = request.POST.get('parent')
-            form.project = object
-            form.auther = request.user.profile
-            form.save()
-            return redirect('project', pk)
+        """ Просмотры """
+        if request.user.is_authenticated:
+            user = object.views.filter(id=profile.id)
+            if not user.exists():
+                object.views.add(profile)
+
+        """ Обновить комментарии """
+        if id:
+            comment = profile.my_review.get(id=id)
+            form = CreateReviewForm(instance=comment)
+            if request.method == 'POST':
+                form = CreateReviewForm(request.POST, instance=comment)
+                if form.is_valid():
+                    form = form.save(commit=False)
+                    if request.POST.get('parent'):
+                        form.parent_id = request.POST.get('parent')
+                    form.project = object
+                    form.auther = profile
+                    form.save()
+                    return redirect('project', pk)
+
+
+        """ Комментарии """
+        if request.method == 'POST' and object.on_off_review:
+            form = CreateReviewForm(request.POST)
+            if form.is_valid():
+                form = form.save(commit=False)
+                if request.POST.get('parent'):
+                    form.parent_id = request.POST.get('parent')
+                form.project = object
+                form.auther = profile
+                form.save()
+                return redirect('project', pk)
+
+    except ObjectDoesNotExist:
+        return redirect('project', pk)
 
     context = {
         'object': object,
