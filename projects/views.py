@@ -27,15 +27,15 @@ def projects(request):
 
 def project(request, pk, id=None):
     try:
-        object = Project.objects.get(id=pk)
+        project = Project.objects.get(id=pk)
         profile = request.user.profile
         form = CreateReviewForm()
 
         """ Просмотры """
         if request.user.is_authenticated:
-            user = object.views.filter(id=profile.id)
+            user = project.views.filter(id=profile.id)
             if not user.exists():
-                object.views.add(profile)
+                project.views.add(profile)
 
         """ Обновить комментарии """
         if id:
@@ -47,20 +47,20 @@ def project(request, pk, id=None):
                     form = form.save(commit=False)
                     if request.POST.get('parent'):
                         form.parent_id = request.POST.get('parent')
-                    form.project = object
+                    form.project = project
                     form.auther = profile
                     form.save()
                     return redirect('project', pk)
 
 
         """ Комментарии """
-        if request.method == 'POST' and object.on_off_review:
+        if request.method == 'POST' and project.on_off_review:
             form = CreateReviewForm(request.POST)
             if form.is_valid():
                 form = form.save(commit=False)
                 if request.POST.get('parent'):
                     form.parent_id = request.POST.get('parent')
-                form.project = object
+                form.project = project
                 form.auther = profile
                 form.save()
                 return redirect('project', pk)
@@ -69,7 +69,7 @@ def project(request, pk, id=None):
         return redirect('project', pk)
 
     context = {
-        'object': object,
+        'object': project,
         'form': form
     }
 
