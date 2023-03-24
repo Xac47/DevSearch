@@ -42,6 +42,6 @@ def searchProjects(request):
         projects = Project.objects.distinct().filter(
             Q(title__icontains=search) |
             Q(tags__in=tags)
-        ).order_by('-id')
+        ).order_by('-created')
 
     return projects, search

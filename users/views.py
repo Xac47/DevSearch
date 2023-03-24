@@ -181,7 +181,3 @@ def subscription_check(request, pk):
     return HttpResponseRedirect(
         request.META['HTTP_REFERER'])  # возвращает пользователя на ту страницу в котором он совершил данную операция
 
-# @login_required
-# def send_message(request, pk):
-#     recipient = Profile.objects.get(id=pk)
-#     messages = 0

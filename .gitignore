@@ -2,3 +2,15 @@ venv
 .idea
 db.sqlite3
 Fixtures/
+
+*/migrations/*
+
+
+__pycache__/
+*/__pycache__/
+*.py[cod]
+.pyc
+*.pyc
+
+!*media/.gitkeep
+media/*
