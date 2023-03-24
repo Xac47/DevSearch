@@ -12,5 +12,5 @@ __pycache__/
 .pyc
 *.pyc
 
-!*media/.gitkeep
-media/*
+!media/default.jpg
+!media/user-default.png
