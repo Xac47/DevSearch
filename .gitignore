@@ -13,3 +13,5 @@ __pycache__/
 
 !media/default.jpg
 !media/user-default.png
+media/project_images/*
+media/user_images/*
