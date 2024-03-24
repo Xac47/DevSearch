@@ -1,9 +1,22 @@
-venv
 .idea
+idea
+.env
+
+*.egg-info/
+.installed.cfg
+*.egg
+
+dist
 db.sqlite3
 
-*/migrations/*
+venv
 
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+*backend/*/migrations/*
+!*backend/*/migrations
+!*backend/*/migrations/__init__.py
 
 __pycache__/
 */__pycache__/
@@ -11,7 +24,8 @@ __pycache__/
 .pyc
 *.pyc
 
-!media/default.jpg
-!media/user-default.png
-media/project_images/*
-media/user_images/*
+media/*
+!*media
+
+erl_crash.dump
+dump.rdb
