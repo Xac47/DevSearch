@@ -19,7 +19,6 @@ def profiles(request):
         'profiles': profiles,
         'search': search or '',
         'search_title': 'Поиск по разработчикам',
-        'search_placeholder': 'Поиск по разработчикам',
         'custom_range': custom_range,
     }
 
@@ -42,14 +41,14 @@ def profile(request, pk):
 
 
 def _login(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    if username and password:
-        user = authenticate(request, username=username, password=password)
-        if user:
+    if request.POST:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if user := authenticate(request, username=username, password=password):
             login(request, user)
             return redirect('account')
-        messages.error(request, 'Не верный логин или пароль')
+        else:
+            messages.error(request, 'Не верный логин или пароль')
 
     return render(request, 'users/login.html')
 
