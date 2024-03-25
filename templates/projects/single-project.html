@@ -43,10 +43,18 @@ location.replace(bbURL);
           <h2 class="singleProject__title">{{ object.title }}</h2>
           <h3 class="singleProject__subtitle">О ПРОЕКТЕ</h3>
           <div class="singleProject__info">
-            {{ object.desc }}
+            {{ object.desc|safe }}
           </div>
           <br>
           <h3 class="singleProject__subtitle">Опубликовано:</h3> {{ object.created }}
+
+<!--          <div>-->
+<!--            {% for similar_post in similar_posts %}-->
+<!--              {{ similar_post.title }}-->
+<!--              {{ similar_post.tags.all|join:', ' }}-->
+<!--            {% endfor %}-->
+<!--          </div>-->
+
           <div class="comments">
             <h3 class="singleProject__subtitle">Обратная связь</h3>
 
@@ -128,7 +136,7 @@ location.replace(bbURL);
                           {{ answer.created }}
                         </p>
                         {% if user.profile == answer.auther or user.profile == object.auther %}
-                        <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-comment' object.id comment.id %}"><i class="fa-regular fa-pen-to-square"></i> Изменить</a>
+                        <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-comment' object.id answer.id %}"><i class="fa-regular fa-pen-to-square"></i> Изменить</a>
                         <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-review' answer.id %}"><i class="fa-solid fa-trash-can"></i> Удалить</a>
                         {% endif %}
                       </div>
