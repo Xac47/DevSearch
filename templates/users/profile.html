@@ -64,7 +64,7 @@
               <a href="#" class="btn btn--sub btn--lg">Отправить сообщение </a>
               <br>
               <br>
-              <a href="{% url 'subscription-check' object.pk %}" class="btn btn--sub btn--lg">
+              <a href="{% url 'subscription-check object.pk %}" class="btn btn--sub btn--lg">
                 {% if object in user.profile.subscriptions.all %}
                 Отписаться
                 {% else %}
