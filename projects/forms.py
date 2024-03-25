@@ -2,6 +2,8 @@ from django import forms
 
 from projects.models import Project, Tag, Review
 
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
 
 class CreateProjectForm(forms.ModelForm):
     title = forms.CharField(
@@ -11,7 +13,7 @@ class CreateProjectForm(forms.ModelForm):
 
     desc = forms.CharField(
         label='Описание',
-        widget=forms.Textarea(attrs={'class': 'input', 'placeholder': 'Описание', 'rows': 14, 'cols': 50})
+        widget=CKEditorUploadingWidget(),
     )
 
     image = forms.FileField(
@@ -39,16 +41,12 @@ class CreateProjectForm(forms.ModelForm):
         fields = ('title', 'desc', 'image', 'on_off_review', 'demo_link', 'source_link', 'tags')
 
 
-    # def __init__(self, *args, **kwargs):
-    #     # super(CreateProjectForm, self).__init__(*args, **kwargs)
-    #     #
-    #     # self.fields['title'].widget.attrs.update({'class': 'input'})
-
 class CreateReviewForm(forms.ModelForm):
     body = forms.CharField(
         label='',
         required=False,
-        widget=forms.Textarea(attrs={'class': 'input', 'rows': 2, 'cols': 50, 'placeholder': 'Комментарии', 'id': 'contactcomment'})
+        widget=forms.Textarea(
+            attrs={'class': 'input', 'rows': 2, 'cols': 50, 'placeholder': 'Комментарии', 'id': 'contactcomment'})
     )
 
     class Meta:

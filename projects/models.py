@@ -24,6 +24,7 @@ class Project(models.Model):
     dis_likes = models.ManyToManyField(Profile, verbose_name='Дизлайки', related_name='my_dislikes', blank=True)
 
     class Meta:
+        ordering = ('-created',)
         verbose_name = 'Проект'
         verbose_name_plural = 'Проекты'
 
@@ -33,9 +34,10 @@ class Project(models.Model):
     def get_review(self):
         return self.review_set.filter(parent__isnull=True)
 
+    objects = models.Manager()
+
 
 class Review(models.Model):
-
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='Проект')
     body = models.TextField('Описание', null=True, blank=True)
@@ -52,6 +54,8 @@ class Review(models.Model):
 
     def get_answers(self):
         return self.review_set.filter(parent__isnull=False)
+
+    objects = models.Manager()
 
 
 class Tag(models.Model):

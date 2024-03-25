@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
@@ -19,17 +19,21 @@ def projects(request):
         'projects': projects,
         'search': search or '',
         'search_title': 'Поиск по названию проекта',
-        'search_placeholder': 'Поиск по названию проекта',
         'custom_range': custom_range,
     }
     return render(request, 'projects/projects.html', context)
 
 
-def project(request, pk, id=None):
+def project(request, pk, review_id=None):
     try:
         project = Project.objects.get(id=pk)
         profile = request.user.profile
         form = CreateReviewForm()
+
+        """ Похожие посты """
+        project_tags = project.tags.values_list('id', flat=True)
+        similar_posts = Project.objects.filter(tags__in=project_tags).exclude(id=pk)
+        similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-created')[:4]
 
         """ Просмотры """
         if request.user.is_authenticated:
@@ -38,8 +42,8 @@ def project(request, pk, id=None):
                 project.views.add(profile)
 
         """ Обновить комментарии """
-        if id:
-            comment = profile.my_review.get(id=id)
+        if review_id:
+            comment = profile.my_review.get(id=review_id)
             form = CreateReviewForm(instance=comment)
             if request.method == 'POST':
                 form = CreateReviewForm(request.POST, instance=comment)
@@ -51,7 +55,6 @@ def project(request, pk, id=None):
                     form.auther = profile
                     form.save()
                     return redirect('project', pk)
-
 
         """ Комментарии """
         if request.method == 'POST' and project.on_off_review:
@@ -70,7 +73,8 @@ def project(request, pk, id=None):
 
     context = {
         'object': project,
-        'form': form
+        'form': form,
+        'similar_posts': similar_posts,
     }
 
     return render(request, 'projects/single-project.html', context)
